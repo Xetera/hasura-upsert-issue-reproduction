@@ -1,0 +1,28 @@
+# development compose file
+version: "3.5"
+services:
+  hasura_issue:
+    image: hasura/graphql-engine:v1.2.0-beta.2.cli-migrations
+    container_name: hasura_issue
+    networks:
+      - link
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres_issue
+    environment:
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DATABASE_URL: postgres://test:test@postgres_issue:5432/issue
+  postgres_issue:
+    container_name: postgres_issue
+    restart: on-failure
+    build:
+      context: .
+    networks:
+      - link
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: issue
+networks:
+  link:
